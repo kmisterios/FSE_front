@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <center>
+    <h2>{{ article['title']}}</h2>
+    {{ article['year']}}
+    <h4>Abstract</h4>
+    <p>
+        {{ article['abstract']}}
+    </p>
+    <br />
+    <form method="post">
+        <input type="submit" value="Download article" size=40>
+    </form>
+    </center>
+{% endblock %}
