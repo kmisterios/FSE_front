@@ -10,6 +10,12 @@ class LinkForm(FlaskForm):
     submit = SubmitField('GO')
 
 
+class GetSchemasForm(FlaskForm):
+    id = StringField('id', validators=[DataRequired()])
+    idDelete = StringField('idDelete', validators=[DataRequired()])
+    newSchema = StringField('newSchema', validators=[DataRequired()])
+
+
 class results_page_form(FlaskForm):
     search = StringField('search', validators=[DataRequired()])
     year = StringField('year', validators=[DataRequired()])
