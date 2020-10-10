@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<style>
+		div.container {
+			border: none;
+			margin: auto;
+		}
+
+		header input {
+			margin: 1em;
+		}
+
+		header,
+		footer {
+			color: white;
+			background-color: darkblue;
+			clear: left;
+			text-align: center;
+		}
+
+		nav {
+			float: left;
+			width: 30%;
+			padding: 1em;
+			border: solid #333;
+      margin: 1em;
+		}
+
+		nav ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		.filter input {
+			height: 20px;
+			width: 80px;
+			margin: auto;
+		}
+
+		.results {
+			float: right;
+			text-align: left;
+			border: solid #333;
+			padding: 1em;
+			width: 60%;
+			margin: 1em;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<div class="container">
+
+		<header>
+			<h1>SeaRCH</h1>
+			<form action="/search/results" method="post">
+				<input type="text" id="search_text" name="search_text" size=100 placeholder="Search...">
+        <input type="submit" value="Search">
+		</header>
+
+		<nav>
+			<l>
+				<li>baseline search</li>
+				<li>deep search</a></li>
+			</l>
+      <div class="filter">
+        <header>
+          <h3>Filter</h3>
+        </header>
+        <ul>
+          <li><input type="number" id="filter_year" name="filter_year" onkeyup="myFunction()" placeholder="Year"></li>
+          <br>
+          <li><input type="text" id="author" name="author"size=100 placeholder="Author"></li>
+        </ul>
+      </div>
+      <div class="deep_search">
+        <header>
+          <h3>Deep search</h3>
+        </header>
+        <input type="checkbox" id="deep search" name="deep search">Search by dataset
+        <br/>
+        <button type="submit">Search</button>
+        </form>
+      </div>
+		</nav>
+
+		<div class="results">
+      <h2>Results</h2>
+        <ul id="myUL">
+      {% for hit in res['hits'] %}
+          <li>
+                <div>{{ hit['year'] }}</div><a href="results/{{ hit['id'] }}">{{ hit['title'] }}</a>
+          </li>
+      {% endfor %}
+      </ul>
+        <center>
+        Request: "{{ res['query'] }}"
+        Results: ({{ res['total'] }})
+        </center>  
+    </div>
+
+<script>
+function myFunction() {
+  // Declare variables
+  var input, filter, ul, li, a, i, txtValue;
+  input = document.getElementById('filter_year');
+  filter = input.value;
+  ul = document.getElementById("myUL");
+  li = ul.getElementsByTagName('li');
+
+  // Loop through all list items, and hide those who don't match the search query
+  for (i = 0; i < li.length; i++) {
+    div = li[i].getElementsByTagName("div")[0];
+    txtValue = div.textContent;
+    if (txtValue.indexOf(filter) > -1) {
+      li[i].style.display = "";
+    } else {
+      li[i].style.display = "none";
+    }
+  }
+}
+</script>    
+<footer>
+
+</footer>
+
+</div>
+
+</body>
+</html>
