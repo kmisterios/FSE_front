@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style_search.css">
+        <meta charset="utf-8">
+        <title>Page Title</title>
+    </head>
+    <body>
+        
+        <img class="search_label"
+            src="../static/page1/SVG/text.svg" 
+            alt="Search_text"
+	        width="80%"/>
+        
+            
+        <form class="search_area" action="/search/results" method="post">
+            <input type="text" id="search_text" placeholder="Type to start your search..." required>
+            <a href="/search/results">
+            <input type="image" name="submit" src="../static/page1/SVG/Enter.svg" 
+                value="Enter">
+            </a>
+        </form>
+    
+    </body>
+</html>
