@@ -8,7 +8,7 @@ body {
     background-image: url("../static/page1/SVG/background.svg");
     height: 100%;
     background-repeat: no-repeat;
-    background-size: auto 960px;
+    background-size: 1920px 1080px;
     border: 0px
 }
 
