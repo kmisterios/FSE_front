@@ -9,6 +9,7 @@ from Service.forms import LinkForm, GetSchemasForm, results_page_form
 import requests
 import numpy as np
 import os
+import time
 import traceback
 
 
@@ -17,8 +18,23 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def res_giver(query):
+    res = {'query': query,
+               'is_filter': 0,
+               'total': 3,
+               'hits': [
+                   {'title': 'Title1', 'year': '1998', 'id': 1, 'abstract': 'text1',
+                    'article_piece': 'Hello world, You\'re rock sucker.'},
+                   {'title': 'Title2', 'year': '2005', 'id': 2, 'abstract': 'text1',
+                    'article_piece': 'Hello world, You\'re sock sucker.'},
+                   {'title': 'Title3', 'year': '2005', 'id': 3, 'abstract': 'text1',
+                    'article_piece': 'Hello world, You\'re wok sucker.'}]}
+    return res
+
+
 def redirect_to_article(id_a, data):
     return redirect(url_for('/search/results/'+ str(id_a), data=data))
+
 
 @app.route('/')
 def route():
@@ -27,73 +43,40 @@ def route():
 
 @app.route('/search')
 def search():
-    #form = results_page_form()
     if request.method == 'POST':
         search_text = request.form.get('search_text')
-        return redirect(url_for('results', search_text=search_text))
+        #session['search_text'] = search_text
+        session['data'] = res_giver(search_text)
+        return redirect(url_for('results'))#search_text=search_text))
     return render_template('search.html', title="Search")
 
 
 @app.route('/search/results', methods=['GET', 'POST'])
 def search_request(): #when we searching again from results page
-    #form = results_page_form()
-    search_text = request.args.get('search_text', None)
-    if search_text is not None:
-        res = {'query': search_text,
-               'is_filter': 0,
-               'total': 3,
-               'hits': [
-                   {'title': 'Title1', 'year': '1998', 'id': 1, 'abstract': 'text1'},
-                   {'title': 'Title2', 'year': '2005', 'id': 2, 'abstract': 'text1'},
-                   {'title': 'Title3', 'year': '2005', 'id': 3, 'abstract': 'text1'}]}
+
+    #search_text = request.args.get('search_text', None)
+    res = session.get('data', None)
+    print(res['query'])
+    #print(search_text)
+    # if search_text is not None:
+    #     print('lol')
+    #     res = res_giver(search_text)
+    #     session['data'] = res
+    # else:
+    #     print('lolol')
+    #     if 'data' in session.keys():
+    #         res = session['data']
+    #     else:
+    #         res = res_giver(search_text)
+    #         session['data'] = res
+    #if request.method == 'POST':
+        #search_text = request.form.get('search_text')
+    search_text = request.form.get('search_text')
+    print(search_text)
+    if search_text != res['query'] and search_text is not None and search_text != '':
+        res = res_giver(search_text)
         session['data'] = res
-    else:
-        res = session['data']
-    if request.method == 'POST':
-        search_text = request.form.get('search_text')
-        if search_text != res['query'] and search_text != '':
-            res = {'query': search_text,
-                   'is_filter': 0,
-                   'total': 3,
-                   'hits': [
-                       {'title': 'Title1', 'year': '1998', 'id': 1, 'abstract': 'text1'},
-                       {'title': 'Title2', 'year': '2005', 'id': 2, 'abstract': 'text1'},
-                       {'title': 'Title3', 'year': '2005', 'id': 3, 'abstract': 'text1'}]}
-            session['data'] = res
-        #filter_text = request.form.get('filter_text')
-        #flash(filter_text)
-        #return redirect(url_for('booking', date=date))
-    return render_template('results.html', res=res, search_text=search_text)
-
-
-    '''
-    if request.form['action'] == 'Search':
-        search_term = form.search.data
-        res = {'query': search_term,
-               'is_filter': 0,
-               'total': 3,
-               'hits': [
-                   {'title': 'Title1', 'year': '1998', 'id': 1},
-                   {'title': 'Title2', 'year': '2005', 'id': 2},
-                   {'title': 'Title3', 'year': '2005', 'id': 3}]}
-        requests.post('', data='6')
-        return render_template('results.html', res=res, form=form)
-    elif request.form['action'] == 'Filter':
-        year = form.year.data
-        if year != '':
-            is_filter = 1
-        else:
-            is_filter = 0
-        res = {'query': 'search_term',
-               'is_filter': is_filter,
-               'total': 3,
-               'hits': [
-                   {'title': 'Title1', 'year': '1998', 'id': 1},
-                   {'title': 'Title2', 'year': '2005', 'id': 2},
-                   {'title': 'Title3', 'year': '2005', 'id': 3}
-               ]
-               }
-        '''
+    return render_template('results.html', res=res)
 
 
 @app.route('/search/results/<int:article_id>', methods=['GET'])
