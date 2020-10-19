@@ -7,16 +7,32 @@ from flask import render_template, flash, redirect, request, url_for, \
 import os
 
 
-
-def res_giver(query):
-    res = {'query': query,
-               'is_filter': 0,
+def res_giver(query, _is_deep=0):
+    if _is_deep == 0:
+        res = {'query': query,
+                   'is_deep': 0,
+                   'total': 3,
+                   'hits': [
+                       {'title': 'Title1', 'year': '1998', 'id': 1, 'abstract': 'text1',
+                        'article_piece': 'Hello world, You\'re rock sucker.', 'author': 'author12'},
+                       {'title': 'Title2', 'year': '2005', 'id': 2, 'abstract': 'text1',
+                        'article_piece': 'Hello world, You\'re sock sucker.', 'author': 'author2'},
+                       {'title': 'Title3', 'year': '2005', 'id': 3, 'abstract': 'text1',
+                        'article_piece': 'Hello world, You\'re wok sucker.', 'author': 'author3'}]}
+    else:
+        res = {'query': query,
+               'is_deep': 1,
                'total': 3,
                'hits': [
                    {'title': 'Title1', 'year': '1998', 'id': 1, 'abstract': 'text1',
-                    'article_piece': 'Hello world, You\'re rock sucker.', 'author': 'author12'},
-                   {'title': 'Title2', 'year': '2005', 'id': 2, 'abstract': 'text1', 'article_piece': 'Hello world, You\'re sock sucker.', 'author': 'author2'},
-                   {'title': 'Title3', 'year': '2005', 'id': 3, 'abstract': 'text1', 'article_piece': 'Hello world, You\'re wok sucker.', 'author': 'author3'}]}
+                    'article_piece': 'Hello world, You\'re rock sucker.', 'author': 'author12',
+                    'dataset': 'dataset1'},
+                   {'title': 'Title2', 'year': '2005', 'id': 2, 'abstract': 'text1',
+                    'article_piece': 'Hello world, You\'re sock sucker.', 'author': 'author2',
+                    'dataset': 'dataset2'},
+                   {'title': 'Title3', 'year': '2005', 'id': 3, 'abstract': 'text1',
+                    'article_piece': 'Hello world, You\'re wok sucker.', 'author': 'author3',
+                    'dataset': 'dataset3'}]}
     return res
 
 
@@ -33,7 +49,7 @@ def route():
 def search():
     if request.method == 'POST':
         search_text = request.form.get('search_text')
-        session['data'] = res_giver(search_text)
+        session['data'] = res_giver(search_text )
         return redirect('/search/results')
     return render_template('search.html', title="Search")
 
@@ -44,7 +60,11 @@ def search_request(): #when we searching again from results page
     res = session.get('data', None)
     search_text = request.form.get('search_text')
     if search_text != res['query'] and search_text is not None and search_text != '':
-        res = res_giver(search_text)
+        if request.form['button'] == 'Basic':
+            is_deep = 0
+        elif request.form['button'] == 'Deep':
+            is_deep = 1
+        res = res_giver(search_text, is_deep)
         session['data'] = res
     return render_template('results.html', res=res)
 
