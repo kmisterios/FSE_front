@@ -48,6 +48,12 @@ body {
     font-family: Baloo;
 }
 
+.statss {
+	width:92%;
+	font-size: 15px;
+	color: #9d9d9d;
+	text-align: center;
+}
 
 .Headliner {
 	background: #2e4362;
@@ -132,6 +138,6 @@ body {
 .dataset_part {
 	font-size: 20px;
 	padding: 20px 0px 10px 100px;
-	color:#6A2100;
+	color:#2e4362;
 	text-align: justify;
 }
